@@ -1,0 +1,11 @@
+addict
+attrs
+black
+coverage
+flake8
+jsonpath-ng
+jsonschema
+mypy
+pylint
+pyperf
+pytest
