@@ -6,24 +6,24 @@ import pytest  # type: ignore
 import scar_to_sarif.scar_to_sarif as sts
 
 
-def test_process_ok_empty_array():
+def test_parse_ok_empty_array():
     job = ['[]']
-    assert sts.process(job) == job[0]
+    assert sts.parse(job) == job[0]
 
 
-def test_process_ok_empty_object():
+def test_parse_ok_empty_object():
     job = ['{}']
-    assert sts.process(job) == job[0]
+    assert sts.parse(job) == job[0]
 
 
-def test_process_ok_direct_json_text(capsys):
+def test_parse_ok_direct_json_text(capsys):
     job = ['{"a": "b", "c": 42, "d": [1, true, false, null, 3.1415, -999999999999999999999]}']
-    assert sts.process(job) == job[0]
+    assert sts.parse(job) == job[0]
 
 
-def test_process_ok_direct_gcc_text(capsys):
+def test_scan_ok_direct_gcc_text(capsys):
     job = ['/a/path/file.ext:42:13: Error: The column 13 causes always trouble in line 42. [CWE-0]']
-    assert sts.process(job) == job[0]
+    assert sts.scan(job) == job[0]
 
 
 def test_detect_ok_direct_gcc_text(capsys):
