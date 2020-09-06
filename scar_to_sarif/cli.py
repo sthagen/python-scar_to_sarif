@@ -21,5 +21,10 @@ def report(data):
 def main(argv=None, pure_data=False, record_format=sts.GCC_FORMAT_CODE):
     """Process ... TODO."""
     argv = argv if argv else sys.argv[1:]
-    report(sts.process(argv, pure_data, record_format))
+    stdin_mode = True if "--" in argv or "--stdin" in argv else False
+    if stdin_mode:
+        argv = [arg for arg in argv if arg not in ("--", "--stdin")]
+        report(sts.process_stdin(record_format))
+    else:
+        report(sts.process(argv, pure_data, record_format))
     return 0

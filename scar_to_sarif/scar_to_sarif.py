@@ -3,6 +3,7 @@
 """Add logical documentation here later TODO."""
 import json
 import re
+import sys
 ENCODING = 'utf-8'
 GCC_RECORD_PATTERN = re.compile(r'^([^:]+):([^:]+):([^:]+):\s+([^:]+):\s+(.+)\s+\[([^]]+)\]\s*$')
 GCC_FORMAT_CODE = "gcc"
@@ -22,6 +23,12 @@ def source(path_or_data, pure_data=False):
         with open(path_or_data, "rt", encoding=ENCODING) as handle:
             for line in handle:
                 yield line
+
+
+def source_stdin():
+    """Encapsulate the stdin entry point."""  # TODO avoid duplication of functions for this special case
+    for line in sys.stdin.readlines():
+        yield line
 
 
 def _strip(line):
@@ -86,3 +93,9 @@ def process(path_or_data, pure_data=False, record_format=GCC_FORMAT_CODE):
         for a_path in path_or_data:
             for entry in transform(parse(scan(source(a_path, pure_data)), record_format)):
                 yield entry
+
+
+def process_stdin(record_format=GCC_FORMAT_CODE):
+    """Public API entry point."""
+    for entry in transform(parse(scan(source_stdin()), record_format)):
+        yield entry

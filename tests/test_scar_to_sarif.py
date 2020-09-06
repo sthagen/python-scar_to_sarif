@@ -100,7 +100,7 @@ def test_source_ok_path_minimal():
         next(line)
 
 
-def test_process_ok_path_minimal():
+def test_process_ok_path_stdin_minimal():
     data = ['tests/fixtures/gcc.txt']
     serialized = (
         '{"path": "/a/path/file.ext", "line": 42, "column": 13, "severity": "error",'
