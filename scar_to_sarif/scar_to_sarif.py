@@ -2,11 +2,18 @@
 # pylint: disable=line-too-long
 """Add logical documentation here later TODO."""
 import json
+import re
+
+GCC_RECORD_PATTERN = re.compile(r'^([^:]+):([^:]+):([^:]+):\s+([^:]+):\s+(.+)\s+\[([^]]+)\]\s*$')
+GCC_FORMAT_CODE = "gcc"
 
 
 def detect(text):
     """Detect the source format."""
-    return NotImplemented
+    m = GCC_RECORD_PATTERN.match(text)
+    if m:
+        return GCC_FORMAT_CODE
+    return None
 
 
 def parse(text):

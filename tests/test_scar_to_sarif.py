@@ -28,7 +28,7 @@ def test_scan_ok_direct_gcc_text(capsys):
 
 def test_detect_ok_direct_gcc_text(capsys):
     job = ['/a/path/file.ext:42:13: Error: The column 13 causes always trouble in line 42. [CWE-0]']
-    assert sts.detect(job) == "gcc"
+    assert sts.detect(job[0]) == sts.GCC_FORMAT_CODE
 
 
 def test_detect_ok_direct_non_gcc_text(capsys):
