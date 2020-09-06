@@ -72,3 +72,9 @@ def test_transform_ok_single_data_item(capsys):
     assert next(transformer) == serialized
     out, err = capsys.readouterr()
     assert out.strip() == ''
+
+
+def test_source_ok_pure_data_minimal():
+    data = ['']
+    line = sts.source(data, pure_data=True)
+    assert next(line) == ''
