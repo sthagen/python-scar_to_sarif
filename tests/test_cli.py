@@ -16,3 +16,13 @@ def test_main_ok_gcc_data(capsys):
     assert cli.main(job, True) == 0
     out, err = capsys.readouterr()
     assert out.strip() == report_expected.strip()
+
+
+def test_main_nok_direct_non_gcc_text_gcc_code(capsys):
+    job = ['<style> (CWE-0) <<<The column 13 causes always trouble in line 42.>>> [/a/path/file.ext:42] -> [/a/path/file.ext:222]']
+    report_expected = (
+        ''
+    )
+    assert cli.main(job, True) == 0
+    out, err = capsys.readouterr()
+    assert out.strip() == report_expected.strip()

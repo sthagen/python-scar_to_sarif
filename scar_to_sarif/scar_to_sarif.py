@@ -73,7 +73,8 @@ def aggregate(data):
 def transform(data):
     """Transform the data."""
     for item in data:
-        yield json.dumps(item)
+        if item:
+            yield json.dumps(item)
 
 
 def process(path_or_data, pure_data=False, record_format=GCC_FORMAT_CODE):
