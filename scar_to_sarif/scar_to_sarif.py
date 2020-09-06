@@ -54,4 +54,5 @@ def aggregate(data):
 
 def transform(data):
     """Transform the data."""
-    return NotImplemented
+    for item in data:
+        yield json.dumps(item)
