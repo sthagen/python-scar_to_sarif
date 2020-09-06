@@ -6,6 +6,7 @@ import re
 
 GCC_RECORD_PATTERN = re.compile(r'^([^:]+):([^:]+):([^:]+):\s+([^:]+):\s+(.+)\s+\[([^]]+)\]\s*$')
 GCC_FORMAT_CODE = "gcc"
+UNKNOWN_FORMAT_CODE = "unknown"
 
 
 def detect(text):
@@ -13,7 +14,7 @@ def detect(text):
     m = GCC_RECORD_PATTERN.match(text)
     if m:
         return GCC_FORMAT_CODE
-    return None
+    return UNKNOWN_FORMAT_CODE
 
 
 def parse(text):
