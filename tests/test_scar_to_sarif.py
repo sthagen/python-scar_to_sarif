@@ -37,6 +37,8 @@ def test_detect_ok_direct_gcc_text(capsys):
 def test_detect_ok_direct_non_gcc_text_default_code(capsys):
     job = ['<style> (CWE-0) <<<The column 13 causes always trouble in line 42.>>> [/a/path/file.ext:42] -> [/a/path/file.ext:222]']
     assert sts.detect(job[0]) == sts.UNKNOWN_FORMAT_CODE
+    out, err = capsys.readouterr()
+    assert out.strip() == ''
 
 
 def test_parse_ok_direct_gcc_text(capsys):
