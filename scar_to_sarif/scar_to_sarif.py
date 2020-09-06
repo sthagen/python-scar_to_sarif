@@ -207,11 +207,9 @@ def process(path_or_data, pure_data=False, record_format=GCC_FORMAT_CODE):
         yield transform(parse(scan(source(path_or_data, pure_data)), record_format))
     else:
         for a_path in path_or_data:
-            for entry in transform(parse(scan(source(a_path, pure_data)), record_format)):
-                yield entry
+            yield transform(parse(scan(source(a_path, pure_data)), record_format))
 
 
 def process_stdin(record_format=GCC_FORMAT_CODE):
     """Public API entry point."""
-    for entry in transform(parse(scan(source_stdin()), record_format)):
-        yield entry
+    yield transform(parse(scan(source_stdin()), record_format))
