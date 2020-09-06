@@ -6,8 +6,13 @@ import pytest  # type: ignore
 import scar_to_sarif.cli as cli
 
 
-def test_main_ok_empty_array(capsys):
-    job = ['[]']
-    assert cli.main(job) == job
+def test_main_ok_gcc_data(capsys):
+    job = ['/a/path/file.ext:42:13: Error: The column 13 causes always trouble in line 42. [CWE-0]']
+    report_expected = (
+        '{"path": "/a/path/file.ext", "line": 42, "column": 13, "severity": "error", '
+        '"message": "The column 13 causes always trouble in line 42.", "msg_code": '
+        '"CWE-0"}\n'
+    )
+    assert cli.main(job, True) == 0
     out, err = capsys.readouterr()
-    assert out.strip() == ''
+    assert out.strip() == report_expected.strip()
