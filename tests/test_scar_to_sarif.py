@@ -59,3 +59,16 @@ def test_detect_nok_direct_non_gcc_text_gcc_code(capsys):
     assert next(parser) == {}
     out, err = capsys.readouterr()
     assert out.strip() == ''
+
+
+def test_transform_ok_single_data_item(capsys):
+    data = [{'path': '/a/path/file.ext', 'line': 42, 'column': 13, 'severity': 'error', 'message': 'The column 13 causes always trouble in line 42.', 'msg_code': 'CWE-0'}]
+    serialized = (
+        '{"path": "/a/path/file.ext", "line": 42, "column": 13, "severity": "error",'
+        ' "message": "The column 13 causes always trouble in line 42.",'
+        ' "msg_code": "CWE-0"}'
+    )
+    transformer = sts.transform(data)
+    assert next(transformer) == serialized
+    out, err = capsys.readouterr()
+    assert out.strip() == ''
