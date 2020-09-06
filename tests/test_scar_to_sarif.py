@@ -44,6 +44,13 @@ def test_detect_ok_direct_non_gcc_text_default_code(capsys):
     assert out.strip() == ''
 
 
+def test_parse_ok_direct_empty_gcc_code():
+    job = ['']
+    parser = sts.parse(job, sts.GCC_FORMAT_CODE)
+    with pytest.raises(StopIteration):
+        next(parser)
+
+
 def test_parse_ok_direct_gcc_text(capsys):
     job = ['/a/path/file.ext:42:13: Error: The column 13 causes always trouble in line 42. [CWE-0]']
     data = {'path': '/a/path/file.ext', 'line': 42, 'column': 13, 'severity': 'error', 'message': 'The column 13 causes always trouble in line 42.', 'msg_code': 'CWE-0'}
@@ -81,7 +88,7 @@ def test_source_ok_pure_data_minimal():
 
 
 def test_source_ok_path_minimal():
-    data = ['tests/fixtures/gcc.log']
+    data = ['tests/fixtures/gcc.txt']
     report_line_expected = (
         '/a/path/file.ext:42:13: Error: The column 13 causes always trouble in line 42. [CWE-0]\n'
     )
