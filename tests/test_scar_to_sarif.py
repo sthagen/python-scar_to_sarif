@@ -14,7 +14,8 @@ def test_parse_ok_unknown_read_format():
 
 def test_parse_nok_mismatch_as_gcc_format():
     job = ['This is not the gcc format.']
-    assert sts.parse(job[0], sts.GCC_FORMAT_CODE) == {}
+    parser = sts.parse(job,sts.GCC_FORMAT_CODE)
+    assert next(parser) == {}
 
 
 def test_parse_nok_direct_json_text():
