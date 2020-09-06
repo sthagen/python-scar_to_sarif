@@ -8,7 +8,8 @@ import scar_to_sarif.scar_to_sarif as sts
 
 def test_parse_ok_unknown_read_format():
     job = ['[]']
-    assert sts.parse(job) == NotImplemented
+    parser = sts.parse(job)
+    assert next(parser) == NotImplemented
 
 
 def test_parse_nok_mismatch_as_gcc_format():
