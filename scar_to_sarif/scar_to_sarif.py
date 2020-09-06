@@ -17,13 +17,15 @@ def detect(text):
     return UNKNOWN_FORMAT_CODE
 
 
+def scan(lines):
+    """Scan the source lines and yield records."""
+    for line in lines:
+        record = line.strip().rstrip('\r')
+        yield record
+
+
 def parse(text):
     """Parse the source text."""
-    return NotImplemented
-
-
-def scan(text):
-    """Scan the source text."""
     return NotImplemented
 
 
