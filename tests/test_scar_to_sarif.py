@@ -14,13 +14,14 @@ def test_parse_ok_unknown_read_format():
 
 def test_parse_nok_mismatch_as_gcc_format():
     job = ['This is not the gcc format.']
-    parser = sts.parse(job,sts.GCC_FORMAT_CODE)
+    parser = sts.parse(job, sts.GCC_FORMAT_CODE)
     assert next(parser) == {}
 
 
 def test_parse_nok_direct_json_text():
     job = ['{"a": "b", "c": 42, "d": [1, true, false, null, 3.1415, -999999999999999999999]}']
-    assert sts.parse(job[0]) == NotImplemented
+    parser = sts.parse(job)
+    assert next(parser) == NotImplemented
 
 
 def test_scan_ok_direct_gcc_text():
