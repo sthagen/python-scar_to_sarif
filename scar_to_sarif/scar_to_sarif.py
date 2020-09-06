@@ -36,8 +36,8 @@ def parse(text, record_format=UNKNOWN_FORMAT_CODE):
     if m:
         return {
             'path': m.group(1),
-            'line': m.group(2),
-            'column': m.group(3),
+            'line': int(m.group(2)),
+            'column': int(m.group(3)),
             'severity': m.group(4).lower(),
             'message': m.group(5),
             'msg_code': m.group(6),
