@@ -28,22 +28,23 @@ def scan(lines):
         yield record
 
 
-def parse(text, record_format=UNKNOWN_FORMAT_CODE):
-    """Parse the source text."""
-    if record_format not in SUPPORTED_READ_FORMATS:
-        return NotImplemented
-    m = PARSER[record_format].match(text)
-    if m:
-        return {
-            'path': m.group(1),
-            'line': int(m.group(2)),
-            'column': int(m.group(3)),
-            'severity': m.group(4).lower(),
-            'message': m.group(5),
-            'msg_code': m.group(6),
-        }
+def parse(records, record_format=UNKNOWN_FORMAT_CODE):
+    """Parse the source records and yield parsed result."""
+    for record in records:
+        if record_format not in SUPPORTED_READ_FORMATS:
+            yield NotImplemented
+        m = PARSER[record_format].match(record)
+        if m:
+            yield {
+                'path': m.group(1),
+                'line': int(m.group(2)),
+                'column': int(m.group(3)),
+                'severity': m.group(4).lower(),
+                'message': m.group(5),
+                'msg_code': m.group(6),
+            }
 
-    return {}
+        yield {}
 
 
 def aggregate(data):
