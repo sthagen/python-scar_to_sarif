@@ -8,6 +8,6 @@ import scar_to_sarif.cli as cli
 
 def test_main_ok_empty_array(capsys):
     job = ['[]']
-    assert cli.main(job) is None
+    assert cli.main(job) == job
     out, err = capsys.readouterr()
-    assert out.strip() == job[0]
+    assert out.strip() == ''
