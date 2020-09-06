@@ -98,3 +98,18 @@ def test_source_ok_path_minimal():
     assert next(line) == report_line_expected
     with pytest.raises(StopIteration):
         next(line)
+
+
+def test_process_ok_path_minimal():
+    data = ['tests/fixtures/gcc.txt']
+    serialized = (
+        '{"path": "/a/path/file.ext", "line": 42, "column": 13, "severity": "error",'
+        ' "message": "The column 13 causes always trouble in line 42.",'
+        ' "msg_code": "CWE-0"}'
+    )
+    line = sts.process(data)
+    assert next(line) == serialized
+    assert next(line) == serialized
+    assert next(line) == serialized
+    with pytest.raises(StopIteration):
+        next(line)
