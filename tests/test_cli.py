@@ -8,11 +8,33 @@ import scar_to_sarif.cli as cli
 
 
 def test_main_ok_gcc_data(capsys):
-    job = ['/a/path/file.ext:42:13: Error: The column 13 causes always trouble in line 42. [CWE-0]']
+    job = ['/a/path/file.ext:42:13: Error: The column 13 causes always trouble in line 42. [CWE-1350]']
     report_expected = (
-        '{"path": "/a/path/file.ext", "line": 42, "column": 13, "severity": "error", '
-        '"message": "The column 13 causes always trouble in line 42.", "msg_code": '
-        '"CWE-0"}\n'
+        '{"version": "2.1.0", "runs": [{"tool": {"driver": {"name": "RTSL!", '
+        '"fullName": "Read the Source, Luke!", "version": "2020.09", "rules": [{"id": '
+        '"CWE1350", "name": "CWE VIEW: Weaknesses in the 2020 CWE Top 25 Most '
+        'Dangerous Software Weaknesses", "helpUri": '
+        '"https://cwe.mitre.org/data/definitions/1350.html"}]}}, "conversion": '
+        '{"tool": {"driver": {"name": "scars_to_sarif"}}, "invocation": {"arguments": '
+        '["--"], "executionSuccessful": true, "commandLine": "--", "endTimeUtc": '
+        '"2020-09-08T12:34:56Z", "workingDirectory": {"uri": "/home/ci/transform"}}}, '
+        '"invocations": [{"executionSuccessful": true, "endTimeUtc": '
+        '"2020-09-08T12:34:57Z", "workingDirectory": {"uri": "/home/ci/transform"}}], '
+        '"versionControlProvenance": [{"repositoryUri": '
+        '"https://ci.example.com/project/repo/", "revisionId": "cafefade", "branch": '
+        '"default"}], "properties": {"metrics": {"total": 1, "error": 1, "warning": '
+        '0}}, "results": [{"message": {"text": "The column 13 causes always trouble '
+        'in line 42."}, "level": "error", "locations": [{"physicalLocation": '
+        '{"region": {"startLine": 42, "startColumn": 13}, "artifactLocation": {"uri": '
+        '"https://ci.example.com/project/repo/browse$path$#$line$?at=default"}, '
+        '"contextRegion": {"endLine": 42, "startLine": 42}}}], "properties": '
+        '{"issue_confidence": "LOW", "issue_severity": "HIGH"}, "hostedViewerUri": '
+        '"https://sarifviewer.azurewebsites.net", "ruleId": "CWE1350", "ruleIndex": '
+        '0}]}], "$schema": '
+        '"https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json", '
+        '"inlineExternalProperties": [{"guid": '
+        '"0c9fe04f-9b74-4972-a82e-2099710a0ba1", "runGuid": '
+        '"dce1bdf0-358b-4898-bedf-f297160f3b37"}]}\n'
     )
     assert cli.main(job, True) == 0
     out, err = capsys.readouterr()
