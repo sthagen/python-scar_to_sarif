@@ -16,12 +16,12 @@ def test_parse_nok_mismatch_as_gcc_format():
     assert sts.parse(job[0], sts.GCC_FORMAT_CODE) == {}
 
 
-def test_parse_nok_direct_json_text(capsys):
+def test_parse_nok_direct_json_text():
     job = ['{"a": "b", "c": 42, "d": [1, true, false, null, 3.1415, -999999999999999999999]}']
     assert sts.parse(job[0]) == NotImplemented
 
 
-def test_scan_ok_direct_gcc_text(capsys):
+def test_scan_ok_direct_gcc_text():
     job = ['/a/path/file.ext:42:13: Error: The column 13 causes always trouble in line 42. [CWE-0]']
     scanner = sts.scan(job)
     assert next(scanner) == job[0]
@@ -30,6 +30,8 @@ def test_scan_ok_direct_gcc_text(capsys):
 def test_detect_ok_direct_gcc_text(capsys):
     job = ['/a/path/file.ext:42:13: Error: The column 13 causes always trouble in line 42. [CWE-0]']
     assert sts.detect(job[0]) == sts.GCC_FORMAT_CODE
+    out, err = capsys.readouterr()
+    assert out.strip() == ''
 
 
 def test_detect_ok_direct_non_gcc_text_default_code(capsys):
