@@ -78,3 +78,16 @@ def test_source_ok_pure_data_minimal():
     data = ['']
     line = sts.source(data, pure_data=True)
     assert next(line) == ''
+
+
+def test_source_ok_path_minimal():
+    data = ['tests/fixtures/gcc.log']
+    report_line_expected = (
+        '/a/path/file.ext:42:13: Error: The column 13 causes always trouble in line 42. [CWE-0]\n'
+    )
+    line = sts.source(data[0])
+    assert next(line) == report_line_expected
+    assert next(line) == report_line_expected
+    assert next(line) == report_line_expected
+    with pytest.raises(StopIteration):
+        next(line)
