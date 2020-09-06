@@ -6,14 +6,14 @@ import pytest  # type: ignore
 import scar_to_sarif.scar_to_sarif as sts
 
 
-def test_parse_ok_empty_array():
+def test_parse_ok_unknown_read_format():
     job = ['[]']
-    assert sts.parse(job) == job[0]
+    assert sts.parse(job) == NotImplemented
 
 
-def test_parse_ok_empty_object():
-    job = ['{}']
-    assert sts.parse(job) == job[0]
+def test_parse_nok_mismatch_as_gcc_format():
+    job = ['This is not the gcc format.']
+    assert sts.parse(job[0], sts.GCC_FORMAT_CODE) == {}
 
 
 def test_parse_ok_direct_json_text(capsys):

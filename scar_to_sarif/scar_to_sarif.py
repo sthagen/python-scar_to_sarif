@@ -7,6 +7,10 @@ import re
 GCC_RECORD_PATTERN = re.compile(r'^([^:]+):([^:]+):([^:]+):\s+([^:]+):\s+(.+)\s+\[([^]]+)\]\s*$')
 GCC_FORMAT_CODE = "gcc"
 UNKNOWN_FORMAT_CODE = "unknown"
+SUPPORTED_READ_FORMATS = (GCC_FORMAT_CODE,)
+PARSER = {
+    GCC_FORMAT_CODE: GCC_RECORD_PATTERN,
+}
 
 
 def detect(text):
@@ -24,9 +28,22 @@ def scan(lines):
         yield record
 
 
-def parse(text):
+def parse(text, record_format=UNKNOWN_FORMAT_CODE):
     """Parse the source text."""
-    return NotImplemented
+    if record_format not in SUPPORTED_READ_FORMATS:
+        return NotImplemented
+    m = PARSER[record_format].match(text)
+    if m:
+        return {
+            'path': m.group(1),
+            'line': m.group(2),
+            'column': m.group(3),
+            'severity': m.group(4).lower(),
+            'message': m.group(5),
+            'msg_code': m.group(6),
+        }
+
+    return {}
 
 
 def aggregate(data):
