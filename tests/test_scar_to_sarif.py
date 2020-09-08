@@ -52,8 +52,8 @@ def test_parse_ok_direct_empty_gcc_code():
 
 
 def test_parse_ok_direct_gcc_surrogate_text(capsys):
-    job = ['p:1:2: E: T. [0]']
-    data = {'path': 'p', 'line': 1, 'column': 2, 'severity': 'e', 'message': 'T.', 'msg_code': '0'}
+    job = ['p:1:2: E: T [0]']
+    data = {'path': 'p', 'line': 1, 'column': 2, 'severity': 'e', 'message': 'T', 'msg_code': '0'}
     parser = sts.parse(job, sts.GCC_READ_FORMAT_CODE)
     assert next(parser) == data
     out, err = capsys.readouterr()
