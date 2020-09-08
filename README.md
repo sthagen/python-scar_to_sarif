@@ -8,4 +8,9 @@ Nothing useful yet.
 
 cppcheck, eslint, pmd, pylint, and shellcheck for now.
 
+
+## Output modes
+
+All in memory and streaming mode.
+
 Note: The default branch (with special meaning for github and gitlab users) has the name default 😉
