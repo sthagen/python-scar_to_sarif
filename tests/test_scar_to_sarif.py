@@ -237,3 +237,15 @@ def test_process_ok_path_minimal_unix_write_format_streaming_mode():
     collate = ' '.join([chunk for chunk in next(sarif)])
     assert collate == serialized
 
+
+def test_process_ok_path_minimal_unix_write_format_memory_mode():
+    data = ['tests/fixtures/gcc.txt']
+    serialized = [
+        '/a/path/file.ext:42:13: error: The column 13 causes always trouble in line 42. [CWE-0]',
+        '/a/path/file.ext:42:13: error: The column 13 causes always trouble in line 42. [CWE-0]',
+        '/a/path/file.ext:42:13: error: The column 13 causes always trouble in line 42. [CWE-0]',
+    ]
+    unix = sts.process(data, write_format=sts.UNIX_WRITE_FORMAT, streaming_mode=False)
+    collate = list(unix)[0]  # TODO provide unwrapped line list in implementation do not unwrap in application
+    assert collate == serialized
+

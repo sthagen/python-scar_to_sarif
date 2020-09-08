@@ -299,7 +299,7 @@ def transform(data, write_format=DEFAULT_WRITE_FORMAT):
                 report_document["runs"][0]["results"].append(_result_to_sarif(item))
         return json.dumps(report_document)
     elif write_format == UNIX_WRITE_FORMAT:
-        return [_result_to_unix(item) for item in data]
+        return [_result_to_unix(item) for item in data if item]
 
 
 def stream(data, write_format=DEFAULT_WRITE_FORMAT):
