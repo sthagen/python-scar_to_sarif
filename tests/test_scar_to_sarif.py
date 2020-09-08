@@ -224,3 +224,16 @@ def test_process_ok_path_minimal_streaming_mode():
     collate = ' '.join([chunk for chunk in next(sarif)])
     assert collate == serialized
 
+
+def test_process_ok_path_minimal_unix_write_format_streaming_mode():
+    data = ['tests/fixtures/gcc.txt']
+    serialized = (
+        '/a/path/file.ext:42:13: error: The column 13 causes always trouble in line '
+        '42. [CWE-0] /a/path/file.ext:42:13: error: The column 13 causes always '
+        'trouble in line 42. [CWE-0] /a/path/file.ext:42:13: error: The column 13 '
+        'causes always trouble in line 42. [CWE-0]'
+    )
+    sarif = sts.process(data, write_format=sts.UNIX_WRITE_FORMAT, streaming_mode=True)
+    collate = ' '.join([chunk for chunk in next(sarif)])
+    assert collate == serialized
+
