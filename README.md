@@ -4,4 +4,8 @@ Transforming Static Code Analysis Results (SCARs) into Static Analysis Results I
 ## What is ready?
 Nothing useful yet.
 
+## Tools targeted
+
+cppcheck, eslint, pmd, pylint, and shellcheck for now.
+
 Note: The default branch (with special meaning for github and gitlab users) has the name default 😉
