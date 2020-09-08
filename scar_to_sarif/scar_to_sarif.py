@@ -20,6 +20,84 @@ SUPPORTED_WRITE_FORMATS = (
     "html",
 )
 DEFAULT_WRITE_FORMAT = SUPPORTED_WRITE_FORMATS[0]
+STREAMING_JSON_PREFIX_TEMPLATE = """\
+{
+  "version": "2.1.0",
+  "runs": [
+    {
+      "versionControlProvenance": [
+        {
+          "repositoryUri": "https://ci.example.com/project/repo/",
+          "revisionId": "cafefade",
+          "branch": "default"
+        }
+      ],
+      "results": [
+"""
+
+STREAMING_JSON_POSTFIX_TEMPLATE = """
+      ],
+      "properties": {
+        "metrics": {
+          "total": 1,
+          "error": 1,
+          "warning": 0
+        }
+      },
+      "tool": {
+        "driver": {
+          "name": "RTSL!",
+          "fullName": "Read the Source, Luke!",
+          "version": "2020.09",
+          "rules": [
+            {
+              "id": "CWE1350",
+              "name": "CWE VIEW: Weaknesses in the 2020 CWE Top 25 Most Dangerous Software Weaknesses",
+              "helpUri": "https://cwe.mitre.org/data/definitions/1350.html"
+            }
+          ]
+        }
+      },
+      "conversion": {
+        "tool": {
+          "driver": {
+            "name": "scars_to_sarif"
+          }
+        },
+        "invocation": {
+          "arguments": [
+            "--"
+          ],
+          "executionSuccessful": True,
+          "commandLine": "--",
+          "endTimeUtc": "2020-09-08T12:34:56Z",
+          "workingDirectory": {
+            "uri": "/home/ci/transform"
+          }
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": True,
+          "endTimeUtc": "2020-09-08T12:34:57Z",
+          "workingDirectory": {
+            "uri": "/home/ci/transform"
+          }
+        }
+      ]
+    }
+  ],
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "inlineExternalProperties": [
+    {
+      "guid": "0c9fe04f-9b74-4972-a82e-2099710a0ba1",
+      "runGuid": "dce1bdf0-358b-4898-bedf-f297160f3b37"
+    }
+  ]
+}
+
+"""
+
 CLONE_ME = {
   "version": "2.1.0",
   "runs": [
@@ -187,25 +265,40 @@ def aggregate(data):
     return NotImplemented
 
 
+def _result_to_sarif(model_item):
+    """DRY expecting model item with content."""
+    entry = deepcopy(RESULT_TEMPLATE)
+    entry["message"]["text"] = model_item["message"]
+    entry["level"] = model_item["severity"]
+    entry["locations"][0]["physicalLocation"]["region"]["startLine"] = model_item["line"]
+    entry["locations"][0]["physicalLocation"]["region"]["startColumn"] = model_item["column"]
+    entry["locations"][0]["physicalLocation"]["artifactLocation"]["uri"].replace(
+        "$path$",
+        model_item["path"]
+    )
+    entry["locations"][0]["physicalLocation"]["contextRegion"]["endLine"] = model_item["line"]
+    entry["locations"][0]["physicalLocation"]["contextRegion"]["startLine"] = model_item["line"]
+    entry["ruleId"] = model_item["msg_code"].replace("-", "")
+    return entry
+
+
 def transform(data):
     """Transform the data."""
     report_document = deepcopy(CLONE_ME)
     for item in data:
         if item:
-            entry = deepcopy(RESULT_TEMPLATE)
-            entry["message"]["text"] = item["message"]
-            entry["level"] = item["severity"]
-            entry["locations"][0]["physicalLocation"]["region"]["startLine"] = item["line"]
-            entry["locations"][0]["physicalLocation"]["region"]["startColumn"] = item["column"]
-            entry["locations"][0]["physicalLocation"]["artifactLocation"]["uri"].replace(
-                "$path$",
-                item["path"]
-            )
-            entry["locations"][0]["physicalLocation"]["contextRegion"]["endLine"] = item["line"]
-            entry["locations"][0]["physicalLocation"]["contextRegion"]["startLine"] = item["line"]
-            entry["ruleId"] = item["msg_code"].replace("-", "")
+            entry = _result_to_sarif(item)
             report_document["runs"][0]["results"].append(entry)
     return json.dumps(report_document)
+
+
+def stream(data):
+    """Stream the data."""
+    yield STREAMING_JSON_PREFIX_TEMPLATE
+    for item in data:
+        if item:
+            yield json.dumps(_result_to_sarif(item))
+    yield STREAMING_JSON_POSTFIX_TEMPLATE
 
 
 def process(path_or_data, inline_mode=False, record_format=GCC_READ_FORMAT_CODE):
