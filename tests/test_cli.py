@@ -36,7 +36,7 @@ def test_main_ok_gcc_inline_data(capsys):
         '"0c9fe04f-9b74-4972-a82e-2099710a0ba1", "runGuid": '
         '"dce1bdf0-358b-4898-bedf-f297160f3b37"}]}\n'
     )
-    assert cli.main(argv=job, inline=True) == 0
+    assert cli.main(argv=job, inline_mode=True) == 0
     out, err = capsys.readouterr()
     assert out.strip() == report_expected.strip()
 
@@ -63,7 +63,7 @@ def test_main_nok_direct_non_gcc_inline_text_gcc_code(capsys):
         '"0c9fe04f-9b74-4972-a82e-2099710a0ba1", "runGuid": '
         '"dce1bdf0-358b-4898-bedf-f297160f3b37"}]}'
     )
-    assert cli.main(job, inline=True) == 0
+    assert cli.main(job, inline_mode=True) == 0
     out, err = capsys.readouterr()
     assert out.strip() == report_expected.strip()
 
@@ -99,7 +99,7 @@ def test_main_ok_source_stdin_minimal(monkeypatch, capsys):
         '"0c9fe04f-9b74-4972-a82e-2099710a0ba1", "runGuid": '
         '"dce1bdf0-358b-4898-bedf-f297160f3b37"}]}'
     )
-    assert cli.main(job, inline=True) == 0
+    assert cli.main(job, inline_mode=True) == 0
     out, err = capsys.readouterr()
     assert out.strip() == report_expected.strip()
 
@@ -145,7 +145,7 @@ def test_main_ok_source_stdin_minimal_long_option(monkeypatch, capsys):
         '"0c9fe04f-9b74-4972-a82e-2099710a0ba1", "runGuid": '
         '"dce1bdf0-358b-4898-bedf-f297160f3b37"}]}'
     )
-    assert cli.main(job, inline=False) == 0
+    assert cli.main(job, inline_mode=False) == 0
     out, err = capsys.readouterr()
     assert out.strip() == report_expected.strip()
 
@@ -161,6 +161,6 @@ def test_main_nok_source_stdin_minimal_long_option_unsupported_write_format(monk
     report_expected = (
         f"Found unexpected option ({unsupported_format_option}) in arguments after option processing: ({unsupported_format_option})"
     )
-    assert cli.main(job, inline=False) == 2
+    assert cli.main(job, inline_mode=False) == 2
     out, err = capsys.readouterr()
     assert out.strip() == report_expected.strip()

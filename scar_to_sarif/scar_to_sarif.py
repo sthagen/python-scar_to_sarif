@@ -208,13 +208,13 @@ def transform(data):
     return json.dumps(report_document)
 
 
-def process(path_or_data, inline=False, record_format=GCC_READ_FORMAT_CODE):
+def process(path_or_data, inline_mode=False, record_format=GCC_READ_FORMAT_CODE):
     """Public API entry point."""
-    if inline:
-        yield transform(parse(scan(source(path_or_data, inline)), record_format=record_format))
+    if inline_mode:
+        yield transform(parse(scan(source(path_or_data, inline_mode)), record_format=record_format))
     else:
         for a_path in path_or_data:
-            yield transform(parse(scan(source(a_path, inline)), record_format=record_format))
+            yield transform(parse(scan(source(a_path, inline_mode)), record_format=record_format))
 
 
 def process_stdin(record_format=GCC_READ_FORMAT_CODE):

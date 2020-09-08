@@ -27,7 +27,7 @@ def report(data, write_format=sts.DEFAULT_WRITE_FORMAT):
 
 
 # pylint: disable=expression-not-assigned
-def main(argv=None, inline=False, record_format=sts.GCC_READ_FORMAT_CODE):
+def main(argv=None, inline_mode=False, record_format=sts.GCC_READ_FORMAT_CODE):
     """Process ... TODO."""
     argv = argv if argv else sys.argv[1:]
     DEBUG and print(f"Arguments after hand over: ({argv})")
@@ -36,7 +36,7 @@ def main(argv=None, inline=False, record_format=sts.GCC_READ_FORMAT_CODE):
         argv = [arg for arg in argv if arg not in ("--", "--stdin")]
     DEBUG and print(f"Arguments after stdin mode check: ({argv})")
 
-    inline_mode = True if "--inline" in argv else False
+    inline_mode = True if inline_mode or "--inline" in argv else False
     if inline_mode:
         argv = [arg for arg in argv if arg != "--inline"]
     DEBUG and print(f"Arguments after inline mode check: ({argv})")
@@ -61,5 +61,5 @@ def main(argv=None, inline=False, record_format=sts.GCC_READ_FORMAT_CODE):
     if stdin_mode:
         report(sts.process_stdin(record_format=record_format), write_format=write_format)
     else:
-        report(sts.process(argv, inline=inline, record_format=record_format), write_format=write_format)
+        report(sts.process(argv, inline_mode=inline_mode, record_format=record_format), write_format=write_format)
     return 0
