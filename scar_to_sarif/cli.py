@@ -21,6 +21,13 @@ def report(data, write_format=sts.DEFAULT_WRITE_FORMAT, streaming_mode=False):
                         sys.stdout.write(chunk)
                 else:
                     sys.stdout.write(item)
+        elif write_format == sts.UNIX_WRITE_FORMAT:
+            for item in data:
+                if streaming_mode:
+                    for chunk in item:
+                        print(chunk)
+                else:
+                    print(item)
         else:
             print(f"Write format {write_format} not yet implemented.")
     else:
@@ -71,6 +78,7 @@ def main(argv=None, inline_mode=False, record_format=sts.GCC_READ_FORMAT_CODE, s
         report(sts.process_stdin(read_format=record_format, write_format=write_format, streaming_mode=streaming_mode),
                write_format=write_format, streaming_mode=streaming_mode)
     else:
+        DEBUG and print(f"write_format {write_format}")
         report(sts.process(argv, inline_mode=inline_mode, read_format=record_format, write_format=write_format, streaming_mode=streaming_mode),
                write_format=write_format, streaming_mode=streaming_mode)
     return 0

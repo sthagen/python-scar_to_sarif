@@ -13,10 +13,10 @@ SUPPORTED_READ_FORMATS = (GCC_READ_FORMAT_CODE,)
 PARSER = {
     GCC_READ_FORMAT_CODE: GCC_RECORD_PATTERN,
 }
-
+UNIX_WRITE_FORMAT = "unix"
 SUPPORTED_WRITE_FORMATS = (
     "json",
-    "unix",
+    UNIX_WRITE_FORMAT,
     "html",
 )
 DEFAULT_WRITE_FORMAT = SUPPORTED_WRITE_FORMATS[0]
@@ -282,6 +282,14 @@ def _result_to_sarif(model_item):
     return entry
 
 
+def _result_to_unix(model_item):
+    """DRY also expecting model item with content."""
+    return (
+        f'{model_item["path"]}:{model_item["line"]}:{model_item["column"]}: {model_item["severity"]}:'
+        f' {model_item["message"]} [{model_item["msg_code"]}]'
+    )
+
+
 def transform(data, write_format=DEFAULT_WRITE_FORMAT):
     """Transform the data."""
     if write_format == DEFAULT_WRITE_FORMAT:
@@ -290,6 +298,8 @@ def transform(data, write_format=DEFAULT_WRITE_FORMAT):
             if item:
                 report_document["runs"][0]["results"].append(_result_to_sarif(item))
         return json.dumps(report_document)
+    elif write_format == UNIX_WRITE_FORMAT:
+        return [_result_to_unix(item) for item in data]
 
 
 def stream(data, write_format=DEFAULT_WRITE_FORMAT):
@@ -300,6 +310,10 @@ def stream(data, write_format=DEFAULT_WRITE_FORMAT):
             if item:
                 yield json.dumps(_result_to_sarif(item))
         yield ' '.join(STREAMING_JSON_POSTFIX_TEMPLATE.replace("\n", " ").split())
+    elif write_format == UNIX_WRITE_FORMAT:
+        for item in data:
+            if item:
+                yield _result_to_unix(item)
 
 
 def process(path_or_data, inline_mode=False, read_format=GCC_READ_FORMAT_CODE, write_format=DEFAULT_WRITE_FORMAT, streaming_mode=False):
