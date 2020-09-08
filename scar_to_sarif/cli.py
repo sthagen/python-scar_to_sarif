@@ -23,11 +23,7 @@ def report(data, write_format=sts.DEFAULT_WRITE_FORMAT, streaming_mode=False):
                     sys.stdout.write(item)
         elif write_format == sts.UNIX_WRITE_FORMAT:
             for item in data:
-                if streaming_mode:
-                    for chunk in item:
-                        print(chunk)
-                else:
-                    print(item)
+                print(item)
         else:
             print(f"Write format {write_format} not yet implemented.")
     else:

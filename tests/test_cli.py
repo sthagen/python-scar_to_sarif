@@ -222,3 +222,13 @@ def test_report_ok_inline_gcc_read_unix_write_format(capsys):
     assert cli.report(data, write_format=sts.UNIX_WRITE_FORMAT) is None
     out, err = capsys.readouterr()
     assert out.strip() == report_expected.strip()
+
+
+def test_report_ok_inline_gcc_read_unix_write_format_streaming(capsys):
+    data = ['a:4:1: E: T [0]']
+    report_expected = (
+        f"a:4:1: E: T [0]"
+    )
+    assert cli.report(data, write_format=sts.UNIX_WRITE_FORMAT, streaming_mode=True) is None
+    out, err = capsys.readouterr()
+    assert out.strip() == report_expected.strip()
