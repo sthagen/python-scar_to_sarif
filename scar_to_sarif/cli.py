@@ -54,7 +54,7 @@ def main(argv=None, inline_mode=False, record_format=sts.GCC_READ_FORMAT_CODE):
         unexpected = [arg for arg in argv if arg.startswith("--")]
         arguments = ', '.join(f"'{arg}'" for arg in argv)
         print(
-            f"Found unexpected option{'' if len(unexpected) == 1 else '(s)'} ({', '.join(unexpected)}) in arguments after option processing:"
+            f"Found unexpected option{'' if len(unexpected) == 1 else 's'} ({', '.join(unexpected)}) in arguments after option processing:"
             f" ({arguments})"
         )
         return 2

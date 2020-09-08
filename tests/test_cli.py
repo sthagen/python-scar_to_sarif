@@ -5,6 +5,7 @@ import json
 import pytest  # type: ignore
 
 import scar_to_sarif.cli as cli
+import scar_to_sarif.scar_to_sarif as sts
 
 
 def test_main_ok_gcc_inline_data(capsys):
@@ -164,7 +165,7 @@ def test_main_nok_source_stdin_minimal_long_option_unsupported_write_format(monk
     assert out.strip() == report_expected.strip()
 
 
-def test_main_nok_source_inline_unsupported_write_format(monkeypatch, capsys):
+def test_main_nok_source_inline_unsupported_write_format(capsys):
     document = ''
     unsupported_format_option = "--xml"
     job = [document, unsupported_format_option]
@@ -172,6 +173,20 @@ def test_main_nok_source_inline_unsupported_write_format(monkeypatch, capsys):
     report_expected = (
         f"Found unexpected option ({unsupported_format_option}) in arguments after option processing: ({arguments})"
     )
-    assert cli.main(job, inline_mode=False) == 2
+    assert cli.main(job, inline_mode=True) == 2
+    out, err = capsys.readouterr()
+    assert out.strip() == report_expected.strip()
+
+
+def test_main_nok_source_inline_too_many_write_formats(capsys):
+    document = ''
+    write_format_options = [f'--{opt}' for opt in sts.SUPPORTED_WRITE_FORMATS]
+    job = [document, *write_format_options]
+    arguments = ', '.join(f"'{arg}'" for arg in (document, *write_format_options[1:]))
+    too_many = f'{", ".join(option for option in write_format_options[1:])}'
+    report_expected = (
+        f"Found unexpected options ({too_many}) in arguments after option processing: ({arguments})"
+    )
+    assert cli.main(job, inline_mode=True) == 2
     out, err = capsys.readouterr()
     assert out.strip() == report_expected.strip()
