@@ -51,6 +51,15 @@ def test_parse_ok_direct_empty_gcc_code():
         next(parser)
 
 
+def test_parse_ok_direct_gcc_surrogate_text(capsys):
+    job = ['p:1:2: E: T. [0]']
+    data = {'path': 'p', 'line': 1, 'column': 2, 'severity': 'e', 'message': 'T.', 'msg_code': '0'}
+    parser = sts.parse(job, sts.GCC_READ_FORMAT_CODE)
+    assert next(parser) == data
+    out, err = capsys.readouterr()
+    assert out.strip() == ''
+
+
 def test_parse_ok_direct_gcc_text(capsys):
     job = ['/a/path/file.ext:42:13: Error: The column 13 causes always trouble in line 42. [CWE-0]']
     data = {'path': '/a/path/file.ext', 'line': 42, 'column': 13, 'severity': 'error', 'message': 'The column 13 causes always trouble in line 42.', 'msg_code': 'CWE-0'}
