@@ -10,13 +10,17 @@ import scar_to_sarif.scar_to_sarif as sts
 DEBUG = os.getenv("SCAR_TO_SARIF_DEBUG")
 
 
-def report(data, write_format=sts.DEFAULT_WRITE_FORMAT):
+def report(data, write_format=sts.DEFAULT_WRITE_FORMAT, streaming_mode=False):
     """Primitive reporter."""
     if write_format in sts.SUPPORTED_WRITE_FORMATS:
         DEBUG and print(f"Found supported write format ({write_format}) option")
         if write_format == sts.DEFAULT_WRITE_FORMAT:
             for item in data:
-                sys.stdout.write(item)
+                if streaming_mode:
+                    for chunk in item:
+                        sys.stdout.write(chunk)
+                else:
+                    sys.stdout.write(item)
         else:
             print(f"Write format {write_format} not yet implemented.")
     else:
@@ -26,7 +30,7 @@ def report(data, write_format=sts.DEFAULT_WRITE_FORMAT):
 
 
 # pylint: disable=expression-not-assigned
-def main(argv=None, inline_mode=False, record_format=sts.GCC_READ_FORMAT_CODE):
+def main(argv=None, inline_mode=False, record_format=sts.GCC_READ_FORMAT_CODE, streaming_mode=False):
     """Process ... TODO."""
     argv = argv if argv else sys.argv[1:]
     DEBUG and print(f"Arguments after hand over: ({argv})")
@@ -39,6 +43,11 @@ def main(argv=None, inline_mode=False, record_format=sts.GCC_READ_FORMAT_CODE):
     if inline_mode:
         argv = [arg for arg in argv if arg != "--inline"]
     DEBUG and print(f"Arguments after inline mode check: ({argv})")
+
+    streaming_mode = True if streaming_mode or "--streaming" in argv else False
+    if streaming_mode:
+        argv = [arg for arg in argv if arg != "--streaming"]
+    DEBUG and print(f"Arguments after streaming mode check: ({argv})")
 
     write_format = sts.DEFAULT_WRITE_FORMAT
     for wf_type in sts.SUPPORTED_WRITE_FORMATS:
@@ -59,7 +68,9 @@ def main(argv=None, inline_mode=False, record_format=sts.GCC_READ_FORMAT_CODE):
         return 2
 
     if stdin_mode:
-        report(sts.process_stdin(read_format=record_format, write_format=write_format), write_format=write_format)
+        report(sts.process_stdin(read_format=record_format, write_format=write_format, streaming_mode=streaming_mode),
+               write_format=write_format, streaming_mode=streaming_mode)
     else:
-        report(sts.process(argv, inline_mode=inline_mode, read_format=record_format, write_format=write_format), write_format=write_format)
+        report(sts.process(argv, inline_mode=inline_mode, read_format=record_format, write_format=write_format, streaming_mode=streaming_mode),
+               write_format=write_format, streaming_mode=streaming_mode)
     return 0
