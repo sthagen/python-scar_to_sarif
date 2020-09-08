@@ -155,8 +155,22 @@ def test_main_nok_source_stdin_minimal_long_option_unsupported_write_format(monk
     monkeypatch.setattr('sys.stdin', io.StringIO(document))
     unsupported_format_option = "--xml"
     job = ['--stdin', unsupported_format_option]
+    arguments = ', '.join(f"'{arg}'" for arg in job[1:])
     report_expected = (
-        f"Found unexpected option ({unsupported_format_option}) in arguments after option processing: ({unsupported_format_option})"
+        f"Found unexpected option ({unsupported_format_option}) in arguments after option processing: ({arguments})"
+    )
+    assert cli.main(job, inline_mode=False) == 2
+    out, err = capsys.readouterr()
+    assert out.strip() == report_expected.strip()
+
+
+def test_main_nok_source_inline_unsupported_write_format(monkeypatch, capsys):
+    document = ''
+    unsupported_format_option = "--xml"
+    job = [document, unsupported_format_option]
+    arguments = ', '.join(f"'{arg}'" for arg in job)
+    report_expected = (
+        f"Found unexpected option ({unsupported_format_option}) in arguments after option processing: ({arguments})"
     )
     assert cli.main(job, inline_mode=False) == 2
     out, err = capsys.readouterr()

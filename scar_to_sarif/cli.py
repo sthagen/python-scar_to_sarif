@@ -52,9 +52,10 @@ def main(argv=None, inline_mode=False, record_format=sts.GCC_READ_FORMAT_CODE):
     DEBUG and print(f"Arguments after option processing: ({argv})")
     if any((arg.startswith("--") for arg in argv)):
         unexpected = [arg for arg in argv if arg.startswith("--")]
+        arguments = ', '.join(f"'{arg}'" for arg in argv)
         print(
             f"Found unexpected option{'' if len(unexpected) == 1 else '(s)'} ({', '.join(unexpected)}) in arguments after option processing:"
-            f" ({', '.join(argv)})"
+            f" ({arguments})"
         )
         return 2
 
