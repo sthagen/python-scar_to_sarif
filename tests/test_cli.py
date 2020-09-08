@@ -193,11 +193,22 @@ def test_main_nok_source_inline_too_many_write_formats(capsys):
 
 
 def test_report_nok_unsupported_write_format(capsys):
-    data = ['']
-    unsupported_format_option = "--xml"
+    data = ['some text being not processed']
+    unsupported_write_format = "xml"
     report_expected = (
-        f"Found unexpected write format ({unsupported_format_option}) option"
+        f"Found unexpected write format ({unsupported_write_format}) option"
     )
-    assert cli.report(data, write_format=unsupported_format_option) is None
+    assert cli.report(data, write_format=unsupported_write_format) is None
+    out, err = capsys.readouterr()
+    assert out.strip() == report_expected.strip()
+
+
+def test_report_ok_unimplemented_write_format(capsys):
+    data = ['some text passing through']
+    unimplemented_write_format = "html"
+    report_expected = (
+        f"Write format {unimplemented_write_format} not yet implemented."
+    )
+    assert cli.report(data, write_format=unimplemented_write_format) is None
     out, err = capsys.readouterr()
     assert out.strip() == report_expected.strip()
