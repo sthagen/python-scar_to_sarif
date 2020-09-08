@@ -239,14 +239,14 @@ def scan(lines):
         yield record
 
 
-def parse(records, record_format=UNKNOWN_READ_FORMAT_CODE):
+def parse(records, read_format=UNKNOWN_READ_FORMAT_CODE):
     """Parse the source records and yield parsed result."""
     for record in records:
         if not record:
             continue
-        if record_format not in SUPPORTED_READ_FORMATS:
+        if read_format not in SUPPORTED_READ_FORMATS:
             yield NotImplemented
-        m = PARSER[record_format].match(record)
+        m = PARSER[read_format].match(record)
         if m:
             yield {
                 'path': m.group(1),
@@ -282,35 +282,37 @@ def _result_to_sarif(model_item):
     return entry
 
 
-def transform(data):
+def transform(data, write_format=DEFAULT_WRITE_FORMAT):
     """Transform the data."""
-    report_document = deepcopy(CLONE_ME)
-    for item in data:
-        if item:
-            entry = _result_to_sarif(item)
-            report_document["runs"][0]["results"].append(entry)
-    return json.dumps(report_document)
+    if write_format == DEFAULT_WRITE_FORMAT:
+        report_document = deepcopy(CLONE_ME)
+        for item in data:
+            if item:
+                report_document["runs"][0]["results"].append(_result_to_sarif(item))
+        return json.dumps(report_document)
 
 
-def stream(data):
+def stream(data, write_format=DEFAULT_WRITE_FORMAT):
     """Stream the data."""
-    yield ' '.join(STREAMING_JSON_PREFIX_TEMPLATE.replace("\n", " ").split())
-    for item in data:
-        if item:
-            yield json.dumps(_result_to_sarif(item))
-    yield ' '.join(STREAMING_JSON_POSTFIX_TEMPLATE.replace("\n", " ").split())
+    if write_format == DEFAULT_WRITE_FORMAT:
+        yield ' '.join(STREAMING_JSON_PREFIX_TEMPLATE.replace("\n", " ").split())
+        for item in data:
+            if item:
+                yield json.dumps(_result_to_sarif(item))
+        yield ' '.join(STREAMING_JSON_POSTFIX_TEMPLATE.replace("\n", " ").split())
 
 
-def process(path_or_data, inline_mode=False, record_format=GCC_READ_FORMAT_CODE, streaming_mode=False):
+def process(path_or_data, inline_mode=False, read_format=GCC_READ_FORMAT_CODE, write_format=DEFAULT_WRITE_FORMAT, streaming_mode=False):
     """Public API entry point."""
     transformer = stream if streaming_mode else transform
     if inline_mode:
-        yield transformer(parse(scan(source(path_or_data, inline_mode)), record_format=record_format))
+        yield transformer(parse(scan(source(path_or_data, inline_mode)), read_format=read_format), write_format=write_format)
     else:
         for a_path in path_or_data:
-            yield transformer(parse(scan(source(a_path, inline_mode)), record_format=record_format))
+            yield transformer(parse(scan(source(a_path, inline_mode)), read_format=read_format), write_format=write_format)
 
 
-def process_stdin(record_format=GCC_READ_FORMAT_CODE):
+def process_stdin(read_format=GCC_READ_FORMAT_CODE, write_format=DEFAULT_WRITE_FORMAT, streaming_mode=False):
     """Public API entry point."""
-    yield transform(parse(scan(source_stdin()), record_format=record_format))
+    transformer = stream if streaming_mode else transform
+    yield transformer(parse(scan(source_stdin()), read_format=read_format), write_format=write_format)

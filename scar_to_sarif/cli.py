@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=line-too-long
 """Add logical documentation here later TODO."""
-import json
 import os
 import sys
 
@@ -60,7 +59,7 @@ def main(argv=None, inline_mode=False, record_format=sts.GCC_READ_FORMAT_CODE):
         return 2
 
     if stdin_mode:
-        report(sts.process_stdin(record_format=record_format), write_format=write_format)
+        report(sts.process_stdin(read_format=record_format, write_format=write_format), write_format=write_format)
     else:
-        report(sts.process(argv, inline_mode=inline_mode, record_format=record_format), write_format=write_format)
+        report(sts.process(argv, inline_mode=inline_mode, read_format=record_format, write_format=write_format), write_format=write_format)
     return 0
