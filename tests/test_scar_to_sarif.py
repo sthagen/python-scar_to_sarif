@@ -249,3 +249,6 @@ def test_process_ok_path_minimal_unix_write_format_memory_mode():
     collate = list(unix)[0]  # TODO provide unwrapped line list in implementation do not unwrap in application
     assert collate == serialized
 
+
+def test_aggregate_dummy():
+    assert sts.aggregate('whatever') == NotImplemented
