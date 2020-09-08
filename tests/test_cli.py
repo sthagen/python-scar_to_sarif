@@ -241,7 +241,7 @@ def test_report_nok_unsupported_write_format(capsys):
 
 def test_report_ok_unimplemented_write_format(capsys):
     data = ['some text passing through']
-    unimplemented_write_format = "html"
+    unimplemented_write_format = sts.HTML_WRITE_FORMAT
     report_expected = (
         f"Write format {unimplemented_write_format} not yet implemented."
     )
