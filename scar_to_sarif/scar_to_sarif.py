@@ -294,11 +294,11 @@ def transform(data):
 
 def stream(data):
     """Stream the data."""
-    yield STREAMING_JSON_PREFIX_TEMPLATE
+    yield ' '.join(STREAMING_JSON_PREFIX_TEMPLATE.replace("\n", " ").split())
     for item in data:
         if item:
             yield json.dumps(_result_to_sarif(item))
-    yield STREAMING_JSON_POSTFIX_TEMPLATE
+    yield ' '.join(STREAMING_JSON_POSTFIX_TEMPLATE.replace("\n", " ").split())
 
 
 def process(path_or_data, inline_mode=False, record_format=GCC_READ_FORMAT_CODE, streaming_mode=False):
