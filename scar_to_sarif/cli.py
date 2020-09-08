@@ -17,7 +17,7 @@ def report(data, write_format=sts.DEFAULT_WRITE_FORMAT):
         DEBUG and print(f"Found supported write format ({write_format}) option")
         if write_format == sts.DEFAULT_WRITE_FORMAT:
             for item in data:
-                print(item)
+                sys.stdout.write(item)
         else:
             print(f"Write format {write_format} not yet implemented.")
     else:
