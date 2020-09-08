@@ -8,6 +8,9 @@ Nothing useful yet.
 
 cppcheck, eslint, pmd, pylint, and shellcheck for now.
 
+## Input modes
+
+File source, stdin, and inline mode.
 
 ## Output modes
 
