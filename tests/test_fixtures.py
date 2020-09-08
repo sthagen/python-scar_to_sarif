@@ -25,7 +25,7 @@ def _validate(document, schema, conformance=None):
 
 
 def test_sarif_fixture(capsys):
-
+    """Validate the example sarif document against local copy of the v2.1.0 schema."""
     schema = _load(SARIF_JSON_SCHEMA)
     document = _load(SARIF_REPORT_SAMPLE)
 
