@@ -151,10 +151,7 @@ def test_main_ok_source_stdin_minimal_long_option(monkeypatch, capsys):
 
 
 def test_main_nok_source_stdin_minimal_long_option_unsupported_write_format(monkeypatch, capsys):
-    document = (
-        '/a/path/file.ext:42:13: Error: Message. [CWE-0]\n'
-        '/a/path/file.ext:42:13: Error: Message. [CWE-0]\n'
-    )
+    document = ''
     monkeypatch.setattr('sys.stdin', io.StringIO(document))
     unsupported_format_option = "--xml"
     job = ['--stdin', unsupported_format_option]
