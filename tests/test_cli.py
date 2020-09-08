@@ -105,6 +105,42 @@ def test_main_ok_source_stdin_minimal(monkeypatch, capsys):
     assert out.strip() == report_expected.strip()
 
 
+def test_main_ok_source_stdin_minimal_streaming(monkeypatch, capsys):
+    document = '/a/path/file.ext:42:13: Error: The column 13 causes always trouble in line 42. [CWE-0]'
+    monkeypatch.setattr('sys.stdin', io.StringIO(document))
+    job = ['--']
+    report_expected = (
+        '{ "version": "2.1.0", "runs": [ { "versionControlProvenance": [ { '
+        '"repositoryUri": "https://ci.example.com/project/repo/", "revisionId": '
+        '"cafefade", "branch": "default" } ], "results": [{"message": {"text": "The '
+        'column 13 causes always trouble in line 42."}, "level": "error", '
+        '"locations": [{"physicalLocation": {"region": {"startLine": 42, '
+        '"startColumn": 13}, "artifactLocation": {"uri": '
+        '"https://ci.example.com/project/repo/browse$path$#$line$?at=default"}, '
+        '"contextRegion": {"endLine": 42, "startLine": 42}}}], "properties": '
+        '{"issue_confidence": "LOW", "issue_severity": "HIGH"}, "hostedViewerUri": '
+        '"https://sarifviewer.azurewebsites.net", "ruleId": "CWE0", "ruleIndex": 0}], '
+        '"properties": { "metrics": { "total": 1, "error": 1, "warning": 0 } }, '
+        '"tool": { "driver": { "name": "RTSL!", "fullName": "Read the Source, Luke!", '
+        '"version": "2020.09", "rules": [ { "id": "CWE1350", "name": "CWE VIEW: '
+        'Weaknesses in the 2020 CWE Top 25 Most Dangerous Software Weaknesses", '
+        '"helpUri": "https://cwe.mitre.org/data/definitions/1350.html" } ] } }, '
+        '"conversion": { "tool": { "driver": { "name": "scars_to_sarif" } }, '
+        '"invocation": { "arguments": [ "--" ], "executionSuccessful": True, '
+        '"commandLine": "--", "endTimeUtc": "2020-09-08T12:34:56Z", '
+        '"workingDirectory": { "uri": "/home/ci/transform" } } }, "invocations": [ { '
+        '"executionSuccessful": True, "endTimeUtc": "2020-09-08T12:34:57Z", '
+        '"workingDirectory": { "uri": "/home/ci/transform" } } ] } ], "$schema": '
+        '"https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json", '
+        '"inlineExternalProperties": [ { "guid": '
+        '"0c9fe04f-9b74-4972-a82e-2099710a0ba1", "runGuid": '
+        '"dce1bdf0-358b-4898-bedf-f297160f3b37" } ] }'
+    )
+    assert cli.main(job, inline_mode=True, streaming_mode=True) == 0
+    out, err = capsys.readouterr()
+    assert out.strip() == report_expected.strip()
+
+
 def test_main_ok_source_stdin_minimal_long_option(monkeypatch, capsys):
     document = (
         '/a/path/file.ext:42:13: Error: Message. [CWE-0]\n'
