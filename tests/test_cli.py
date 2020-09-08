@@ -190,3 +190,14 @@ def test_main_nok_source_inline_too_many_write_formats(capsys):
     assert cli.main(job, inline_mode=True) == 2
     out, err = capsys.readouterr()
     assert out.strip() == report_expected.strip()
+
+
+def test_report_nok_unsupported_write_format(capsys):
+    data = ['']
+    unsupported_format_option = "--xml"
+    report_expected = (
+        f"Found unexpected write format ({unsupported_format_option}) option"
+    )
+    assert cli.report(data, write_format=unsupported_format_option) is None
+    out, err = capsys.readouterr()
+    assert out.strip() == report_expected.strip()
