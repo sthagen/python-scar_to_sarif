@@ -301,13 +301,14 @@ def stream(data):
     yield STREAMING_JSON_POSTFIX_TEMPLATE
 
 
-def process(path_or_data, inline_mode=False, record_format=GCC_READ_FORMAT_CODE):
+def process(path_or_data, inline_mode=False, record_format=GCC_READ_FORMAT_CODE, streaming_mode=False):
     """Public API entry point."""
+    transformer = stream if streaming_mode else transform
     if inline_mode:
-        yield transform(parse(scan(source(path_or_data, inline_mode)), record_format=record_format))
+        yield transformer(parse(scan(source(path_or_data, inline_mode)), record_format=record_format))
     else:
         for a_path in path_or_data:
-            yield transform(parse(scan(source(a_path, inline_mode)), record_format=record_format))
+            yield transformer(parse(scan(source(a_path, inline_mode)), record_format=record_format))
 
 
 def process_stdin(record_format=GCC_READ_FORMAT_CODE):
