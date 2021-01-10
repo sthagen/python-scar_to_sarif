@@ -1,6 +1,9 @@
 # python-scar_to_sarif
 Transforming Static Code Analysis Results (SCARs) into Static Analysis Results Interchange Format (SARIF)
 
+## Status
+Experimental
+
 ## What is ready?
 Nothing useful yet.
 
