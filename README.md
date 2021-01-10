@@ -19,4 +19,4 @@ File source, stdin, and inline mode.
 
 All in memory and streaming mode.
 
-**Note**: The name of the default branch is `default`.
+**Note**: The default branch is `default`.
