@@ -1,11 +1,4 @@
 addict==2.4.0
 attrs==21.4.0
-black==22.6.0
-coverage==6.4.1
-flake8==4.0.1
 jsonpath-ng==1.5.3
 jsonschema==4.6.2
-mypy==0.961
-pylint==2.14.4
-pyperf==2.3.1
-pytest==7.1.2
