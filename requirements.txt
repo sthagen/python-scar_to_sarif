@@ -1,5 +1,5 @@
 addict==2.4.0
 attrs==23.1.0
 jsonpath-ng==1.6.0
-jsonschema==4.19.0
+jsonschema==4.19.1
 referencing==0.30.2
