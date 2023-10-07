@@ -75,7 +75,7 @@ clean:
 	@rm -f `find . -type f -name '*~' `
 	@rm -f `find . -type f -name '.*~' `
 	@rm -rf .cache htmlcov *.egg-info build dist/*
-	@rm -f .coverage .coverage.* *.log current-bandit.json
+	@rm -f .coverage .coverage.* *.log current-bandit.json .DS_Store
 	python setup.py clean
 
 .PHONY: name
